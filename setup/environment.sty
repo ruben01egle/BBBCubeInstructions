@@ -6,24 +6,6 @@
 \renewcommand{\listoflistingscaption}{Quelltextverzeichnis}
 \providecommand{\listingautorefname}{Listing}
 
-\newglossary{terms}{gls}{glo}{Begriffe}
-\newglossary{symbols}{gls}{glo}{Formelzeichen}
-\newglossarystyle{long3colfixedwidth}{
-    \setglossarystyle{long3col}
-    \renewenvironment{theglossary}
-        {\begin{longtable}{p{0.15\textwidth}p{0.6\textwidth}p{0.17\textwidth}}}
-    {\end{longtable}}
-}
-\newglossarystyle{long4colfixedwidth}{
-    \setglossarystyle{long4col}
-    \renewenvironment{theglossary}
-        {\begin{longtable}{p{0.15\textwidth}p{0.5\textwidth}p{0.075\textwidth}p{0.17\textwidth}}}
-    {\end{longtable}}
-}
-\setglossarysection{subsection}
-
 \sisetup{
   output-decimal-marker = {,}
 }
-
-\pretocmd{\chapter}{\glsresetall}{}{}

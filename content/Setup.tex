@@ -1,0 +1,53 @@
+\chapter{Setup Entwicklungsumgebung}
+    \label{cha:SetupEntwicklungsumgebung}
+    Momentan werden zwei Entwicklungsumgebungen angeboten. Die alte Variante basiert auf Eclipse, was in einer virtuellen Box ausgeführt wird. Allerdings wird diese Umgebung nicht mehr aktiv gepflegt und ist an vielen Stellen nicht nach neuem Stand der Technik umgesetzt. Eine ausführliche Anleitung mit allen Links findet sich im Ilias unter Legacy. Als Alternative kann VSCode verwendet werden. Dafür ist ebenfalls eine virtuelle Box verfügbar, die Umgebung kann aber mit wenig Aufwand auf allen Linux-Geräten (vorzugsweise Ubuntu) aufgesetzt werden (natives Linux, virtuelle Maschine, WSL). Eine ausführliche Anleitung dazu findet sich im Github-Repo mit der Umgebung \url{https://github.com/ruben01egle/BBBCube}. Grundsätzlich ist das VSCode-Setup schneller, einfacher zu bedienen, bietet mehr Funktionen und nutzt einen moderneren Workflow.
+
+    \section{VSCode-Umgebung}
+        Die Nutzung von Git ist sehr zu empfehlen. Um das Repository herunterzuladen, folgenden Befehl in ein Terminal an einem geeigneten Speicherort eingeben:
+        \begin{listing}[H]
+            \begin{minted}[breaklines, fontsize=\small, linenos, numbersep=5pt, autogobble]{bash}
+                git clone https://github.com/ruben01egle/BBBCube 
+            \end{minted}
+            \caption{Clone VSCode-Repository}
+            \label{lst:CloneRepo}
+        \end{listing}
+        Danach kann der Ordner \textit{BBBCube} mit VSCode geöffnet werden. Eine ausführliche Anleitung zur Installation aller Pakete und eine Übersicht aller Funktionen und deren Verwendung findet sich in der \textit{BBBCube/README}-Datei. Diese Datei sollte gründlich durchgelesen werden, im Folgenden wird nur eine kurze Zusammenfassung dargestellt.
+        Eine Übersicht zu VSCode ist in \autoref{fig:VSCode} zu sehen.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width = \textwidth]{media/VSCode.png}
+            \caption{VSCode Oberfläche}
+            \label{fig:VSCode}
+        \end{figure}
+        \subsection{Verbindung zum Server aufbauen}
+            Verbindung zum Server aufbauen, der alle Würfel verwaltet. Dazu wird folgender Befehl im Terminal ausgeführt.
+            \begin{listing}[H]
+                \begin{minted}[breaklines, fontsize=\small, linenos, numbersep=5pt, autogobble]{bash}
+                    ./connect_cube.sh start groupX
+                \end{minted}
+                \caption{Aufbau zum Server der Würfel}
+                \label{lst:Connect2Server}
+            \end{listing}
+
+        \subsection{Steckdose anschalten}
+            Steckdose für die Würfel anschalten. Dazu \url{http://localhost:42000} aufrufen und einschalten.
+        \subsection{Zugriff auf Würfel}
+            Die Verbindung zu den beiden BeagleBones und der Kamera zur Steuerung des Würfels ist nun möglich. Der Zugriff auf das BeagleBone zur Regelung des Würfels kann per SSH erfolgen:
+            \begin{listing}[H]
+                \begin{minted}[breaklines, fontsize=\small, linenos, numbersep=5pt, autogobble]{bash}
+                    ssh root@localhost -p48000
+                \end{minted}
+                \caption{Aufbau zum Würfel}
+                \label{lst:Connect2BBB}
+            \end{listing}
+            Auf die Kamera und das BeagleBone zum Hochfahren des Würfels kann mit dem Python-Skript \textit{gui/cube\_control.py} zugegriffen werden. Diese Funktion ist im VSCode-Task \textit{gui control} automatisiert. Um das Projekt zu bauen, auf dem eigenen PC oder auf dem BeagleBone laufen zu lassen gibt es ebenfalls VSCode-Tasks:
+            \begin{itemize}
+                \item \textit{gui control}: Startet die Anwendung für die Kamera und zum Hochfahren des Würfels
+                \item \textit{built native}: Kompiliert das Projekt für den lokalen PC
+                \item \textit{run native}: Führt das Programm auf dem lokalen PC aus
+                \item \textit{build for bbb}: Kompiliert das Projekt für das BeagleBone
+                \item \textit{run on bbb}: Führt das Programm auf dem BeagleBone aus
+                \item \textit{gui viewer}: Plottet und speichert vom BeagleBone geschickten Datenstream für Sensordaten etc. ! Funktioniert erst wenn entsprechendes Programm auf dem BeagleBone auch Daten verschickt
+            \end{itemize}
+            Eine detaillierte Übersicht aller Funktionen ist in \textit{BBBCube/README} zu finden.
+

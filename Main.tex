@@ -1,21 +1,19 @@
 \documentclass[
         11pt,                   % Schriftgröße (10pt, 11pt, 12pt) 11:pala:ok,
-        %oneside,               % gleiche Ausrichtung mit großem Rand links
-        twoside,                % alternierende Ausrichtung, kleiner rand beide seiten
+        oneside,               % gleiche Ausrichtung mit großem Rand links
+        %twoside,                % alternierende Ausrichtung, kleiner rand beide seiten
         %twoside=semi,          % alternierende Ausrichtung, Binderand abwechseld
         numbers=noenddot,       % Kapitelnummer ohne . am Ende
         open=any,               % Kapitel auch auf geraden Seiten beginnen(keine leeren Seiten)
         headings=normal,        % Groesse der Ueberschrift (bigheadings, normalheadings, 
         parskip=half,           % Europäischer Satz mit Abstand zwischen Absätzen
         headinclude,            % Kopfzeile bei Satzspiegel bereucksichtigen
-        DIV=15,                 % mit palatino 11pt oder CM 12
-        BCOR=14mm]              % Binderand 1mm, für Klebebindung 14mm dann etwa gleichmäßig
+        DIV=12]                 % mit palatino 11pt oder CM 12
    {scrbook}
 
 \usepackage{setup/packages}
 \usepackage{setup/pdf-setup}
 \usepackage{setup/environment}
-\usepackage{supplementary/setupverzeichnisse}
 
 \begin{document}
     % Titel
@@ -26,20 +24,16 @@
     % Vorspann
     \include{setup/pagestyle-pre}
 
-    \include{frontmatter/Erklaerung}
-    \include{frontmatter/Danksagung}
     \include{frontmatter/Kurzfassung}
-    \include{supplementary/Nomenklatur}
     \include{supplementary/Inhaltsverzeichnis}
 
     %  Hauptteil
     \include{setup/pagestyle-main}
 
-    \include{content/chapter1}
-    \include{content/chapter2}    
+    \include{content/Setup}
+    \include{content/Software}    
 
     % Verzeichnisse
-    \include{supplementary/Literaturverzeichnis}
     \include{supplementary/Abbildungsverzeichnis}
     \include{supplementary/Tabellenverzeichnis}
     \include{supplementary/Quelltextverzeichnis}

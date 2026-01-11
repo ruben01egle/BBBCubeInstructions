@@ -1,0 +1,116 @@
+%% Creator: Inkscape 1.2.2 (b0a8486541, 2022-12-01), www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'media/Softwarearchtitektur.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{543.52432577bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.74774452)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{media/Softwarearchtitektur.pdf}}%
+    \put(0.03855515,0.20390745){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Container aktualisieren\end{tabular}}}}%
+    \put(0.08047113,0.66388684){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Producer\end{tabular}}}}%
+    \put(0.50823509,0.65346968){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Loop\end{tabular}}}}%
+    \put(0.64732375,0.65236942){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Single shot\end{tabular}}}}%
+    \put(0.8148298,0.65236942){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Bedingung\end{tabular}}}}%
+    \put(0.20552197,0.66388684){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Consumer\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{media/Softwarearchtitektur.pdf}}%
+    \put(0.04763164,0.5548522){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Init\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{media/Softwarearchtitektur.pdf}}%
+    \put(0.04811166,0.49967346){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}while runvar:\end{tabular}}}}%
+    \put(0.08538849,0.60407348){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Control-Comp\end{tabular}}}}%
+    \put(0.46916708,0.11883309){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Container\end{tabular}}}}%
+    \put(0.22471291,0.49751745){\color[rgb]{0,0,0}\rotatebox{0.11174053}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Ta\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{media/Softwarearchtitektur.pdf}}%
+    \put(0.04293455,0.43848752){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Sensordaten auslesen\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{media/Softwarearchtitektur.pdf}}%
+    \put(0.04829374,0.38077163){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Zustandsschätzung\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{media/Softwarearchtitektur.pdf}}%
+    \put(0.04903032,0.32298213){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Regler aktualisieren\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=7]{media/Softwarearchtitektur.pdf}}%
+    \put(0.04439881,0.26372073){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Motor aktualisieren\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=8]{media/Softwarearchtitektur.pdf}}%
+    \put(0.04597384,0.14367089){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Motor deaktivieren\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=9]{media/Softwarearchtitektur.pdf}}%
+    \put(0.04484509,0.08571571){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Thread beenden\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=10]{media/Softwarearchtitektur.pdf}}%
+    \put(0.38917115,0.23328963){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Programm beenden\end{tabular}}}}%
+    \put(0.45965832,0.07964636){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Semaphore\end{tabular}}}}%
+    \put(0.46131802,0.02693115){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Data\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=11]{media/Softwarearchtitektur.pdf}}%
+    \put(0.39018467,0.55723107){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Comm-Comp starten\end{tabular}}}}%
+    \put(0.4840258,0.60179211){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Main\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=12]{media/Softwarearchtitektur.pdf}}%
+    \put(0.38559582,0.49368281){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Control-Comp starten\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=13]{media/Softwarearchtitektur.pdf}}%
+    \put(0.38843457,0.44010656){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Auf Terminaleingabe\\warten\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=14]{media/Softwarearchtitektur.pdf}}%
+    \put(0.38917115,0.35057966){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}runvar = false\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=15]{media/Softwarearchtitektur.pdf}}%
+    \put(0.37869661,0.29072038){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Comm-Comp freigeben\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=16]{media/Softwarearchtitektur.pdf}}%
+    \put(0.72101414,0.55618245){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Init\end{tabular}}}}%
+    \put(0.8958905,0.43921902){\color[rgb]{0,0,0}\rotatebox{0.62342185}{\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Sem\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=17]{media/Softwarearchtitektur.pdf}}%
+    \put(0.72229886,0.49964529){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Warten auf Client\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=18]{media/Softwarearchtitektur.pdf}}%
+    \put(0.72425397,0.44171832){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}while runvar:\end{tabular}}}}%
+    \put(0.77127313,0.60493453){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Comm-Comp\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=19]{media/Softwarearchtitektur.pdf}}%
+    \put(0.72517263,0.38231714){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Container lesen\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=20]{media/Softwarearchtitektur.pdf}}%
+    \put(0.72630138,0.32298221){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Message versenden\end{tabular}}}}%
+    \put(0.77630771,0.07828285){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}UDP/IP Packet \\an Python GUI\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=21]{media/Softwarearchtitektur.pdf}}%
+    \put(0.35158173,0.66388684){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Wartet auf\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=22]{media/Softwarearchtitektur.pdf}}%
+    \put(0.72108289,0.26096085){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}Thread beenden\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=23]{media/Softwarearchtitektur.pdf}}%
+  \end{picture}%
+\endgroup%

@@ -1,0 +1,42 @@
+\chapter{Chapter2}
+    \section{Picture}
+        Here is how a picture works (see \autoref{fig:example_pic}):
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width = 0.9\textwidth]{media/HsKa_new.png}
+            \caption{Example picture\cite{example_picture_source}}
+            \label{fig:example_pic}
+        \end{figure}
+    
+    \section{Table}
+        And the table \autoref{tab:beispiel} shows an example of a table:
+        \begin{table}[H]
+            \centering
+            \caption{Eine einfache Beispieltabelle}
+            \label{tab:beispiel}
+            \begin{tabular}{|c|c|}
+                \hline
+                Spalte 1 & Spalte 2 \\
+                \hline
+                Wert A   & Wert B   \\
+                Wert C   & Wert D   \\
+                \hline
+            \end{tabular}
+        \end{table}
+
+    \section{Listings}
+        Example file listing seen in \autoref{lst:bsp}:
+        \begin{listing}[H]
+            \inputminted[breaklines, fontsize=\small, linenos, numbersep=5pt]{cpp}{media/Skripte/example.cpp}
+            \caption{Example Listing}
+            \label{lst:bsp}
+        \end{listing}
+        Or inline (\autoref{lst:bsp_inline}):
+        \begin{listing}[H]
+            \begin{minted}[breaklines, fontsize=\small, linenos, numbersep=5pt, autogobble]{bash}
+                echo "example" >> /dev/null
+            \end{minted}
+            \caption{Inline Listing}
+            \label{lst:bsp_inline}
+        \end{listing}
+        Make sure to activate shell-escape to use minted!

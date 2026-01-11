@@ -1,0 +1,78 @@
+%%
+%%  Pagestyle für Anhang
+%%  2018-07-26 
+%=============================================================================
+\automark[section]{chapter}
+\clearpairofpagestyles
+\pagestyle{scrheadings}            % Kopf- und Fusszeilen
+\pagenumbering{arabic}
+%\setcounter{page}{1}              % auskommentiert_> weiterzählen 
+%
+\lehead{\pagemark \hspace*{2em} \headmark}
+\rohead{\headmark \hspace*{2em} \pagemark }
+
+%%  Kolumnentitel  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  alternativ: von wiley 
+%%
+\clearpairofpagestyles
+\pagestyle{plain}
+\pagestyle{scrheadings}
+
+\lehead[%
+  \llap{%
+    \textbf{A}\pagemark
+    \hspace{1mm}%
+    \smash{\rule[-2.8mm]{1pt}{6mm}}%
+    \hspace{2mm}%
+  }%
+]{%
+  \llap{%
+    \textbf{A}\pagemark
+    \hspace{1mm}%
+    \smash{\rule[-2.8mm]{1pt}{6mm}}%
+    \hspace{2mm}%
+  }%
+  {%
+    \sffamily
+    \itshape
+    \selectfont
+    \headmark
+  }%
+}
+
+\rohead[%
+  \rlap{%
+    \hspace{2mm}%
+    \smash{\rule[-2.8mm]{1pt}{6mm}}%
+    \hspace{1mm}%
+    \textbf{A}\pagemark
+  }%
+]{%
+  {%
+      \sffamily
+    \itshape
+    \selectfont
+    \headmark
+  }%
+  \rlap{%
+    \hspace{2mm}%
+    \smash{\rule[-2.8mm]{1pt}{6mm}}%
+    \hspace{1mm}%
+    \textbf{A}\pagemark
+  }%
+}
+
+\renewcommand\pnumfont{%
+  \sffamily%
+  \bfseries
+  \upshape
+  \fontsize{10}{12}%
+  \selectfont
+}
+
+\renewcommand\headfont{%
+  \sffamily%
+  \itshape
+  \fontsize{10}{12}%
+  \selectfont
+}

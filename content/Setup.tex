@@ -1,5 +1,5 @@
 \chapter{Setup Entwicklungsumgebung}
-    \label{cha:SetupEntwicklungsumgebung}
+    \label{ch:SetupEntwicklungsumgebung}
     Momentan werden zwei Entwicklungsumgebungen angeboten. Die alte Variante basiert auf Eclipse, was in einer virtuellen Box ausgeführt wird. Allerdings wird diese Umgebung nicht mehr aktiv gepflegt und ist an vielen Stellen nicht nach neuem Stand der Technik umgesetzt. Eine ausführliche Anleitung mit allen Links findet sich im Ilias unter Legacy. Als Alternative kann VSCode verwendet werden. Dafür ist ebenfalls eine virtuelle Box verfügbar, die Umgebung kann aber mit wenig Aufwand auf allen Linux-Geräten (vorzugsweise Ubuntu) aufgesetzt werden (natives Linux, virtuelle Maschine, WSL). Eine ausführliche Anleitung dazu findet sich im Github-Repo mit der Umgebung \url{https://github.com/ruben01egle/BBBCube}. Grundsätzlich ist das VSCode-Setup schneller, einfacher zu bedienen, bietet mehr Funktionen und nutzt einen moderneren Workflow.
 
     \section{VSCode-Umgebung}
@@ -37,7 +37,7 @@
                 \begin{minted}[breaklines, fontsize=\small, linenos, numbersep=5pt, autogobble]{bash}
                     ssh root@localhost -p48000
                 \end{minted}
-                \caption{Aufbau zum Würfel}
+                \caption{Aufbau SSH Verbindung zum Würfel}
                 \label{lst:Connect2BBB}
             \end{listing}
             Auf die Kamera und das BeagleBone zum Hochfahren des Würfels kann mit dem Python-Skript \textit{gui/cube\_control.py} zugegriffen werden. Diese Funktion ist im VSCode-Task \textit{gui control} automatisiert. Um das Projekt zu bauen, auf dem eigenen PC oder auf dem BeagleBone laufen zu lassen gibt es ebenfalls VSCode-Tasks:
@@ -47,7 +47,9 @@
                 \item \textit{run native}: Führt das Programm auf dem lokalen PC aus
                 \item \textit{build for bbb}: Kompiliert das Projekt für das BeagleBone
                 \item \textit{run on bbb}: Führt das Programm auf dem BeagleBone aus
-                \item \textit{gui viewer}: Plottet und speichert vom BeagleBone geschickten Datenstream für Sensordaten etc. ! Funktioniert erst wenn entsprechendes Programm auf dem BeagleBone auch Daten verschickt
+                \item \textit{gui viewer}: Plottet und speichert vom BeagleBone geschickten Datenstream für Sensordaten etc. !!Funktioniert erst wenn entsprechendes Programm auf dem BeagleBone auch Daten verschickt!!
             \end{itemize}
             Eine detaillierte Übersicht aller Funktionen ist in \textit{BBBCube/README} zu finden.
 
+        \subsection{Bedienung Würfel zum Balancieren}
+            Wenn die Target-Anwendung implementiert ist und das Balancieren getestet werden soll, muss der Würfel zuerst in die aufrechte Lage gebracht werden. Nun wird der Würfel aber festgehalten, und kann somit nicht regeln und wird unweigerlich umfallen, sobald er losgelassen wird. Daher muss er erst auf 5 Grad Gap gestellt werden. Dann hat der Würfel die Freiheit, sich selbst aufzurichten und zu regeln. Nun kann die Target-Anwendung gestartet werden. Sobald sich der Würfel aufgestellt hat und sicher balanciert, kann er released werden.

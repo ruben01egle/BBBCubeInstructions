@@ -1,6 +1,6 @@
 \chapter{Software}
     \label{ch:Software}
-    Das folgende Kapitel beschreibt die Architektur der Anwendung zum Balancieren des Würfels. Fortgeschrittene Teams können eigenständig die Komponenten implementieren. Bei Schwierigkeiten können die Hilfestellungen mit mehr Anweisungen am Ende der Beschreibung der jeweiligen Komponente zur Hilfe herangezogen werden.
+    Das folgende Kapitel beschreibt die Architektur der Anwendung zum Balancieren des Würfels. Fortgeschrittene Teams können eigenständig die Komponenten implementieren. Bei Schwierigkeiten können die Hilfestellungen mit mehr Anweisungen am Ende der Beschreibung der jeweiligen Komponente zur Hilfe herangezogen werden. Prinzipiell sind bereits sehr viele Klassen im Framework implementiert. Die Ansteuerung der Hardware und die Verwaltung der Threads kann direkt so verwendet werden. Auch gibt es bereits Klassen zum Speichern aller möglichen Daten (Imu-Daten, Zustandsvektor etc.). Verwenden Sie diese und machen Sie sich mit dem Framework vertraut, indem Sie sich anschauen, welche Klassen existieren!
 
     \begin{figure}[H]
         \centering
@@ -11,17 +11,110 @@
     \end{figure}
     
     \section{Architektur Target-Anwendung}
+        Die Architektur und der Ablauf der Targetanwendung ist in \autoref{fig:Softwarearchtitektur} dargestellt. Diese besteht aus drei Komponenten, die jeweils in einem eigenen Thread laufen. Die Main-Komponente verwaltet die anderen beiden Komponenten und verarbeitet Nutzereingaben. Zusätzlich werden die beiden anderen Komponenten erstellt und gestartet. Die Control-Comp kümmert sich um die Umsetzung der Regelkreise und die Ansteuerung der Hardware, während die Comm-Comp Fahrzeugdaten an die Python-Gui auf dem Entwicklungsrechner verschickt.
         \begin{figure}[H]
-        \centering
-            \def\svgwidth{\linewidth} 
-            \input{media/Softwarearchtitektur.pdf_tex}
-        \caption{Softwarearchtitektur}
-        \label{fig:Softwarearchtitektur}
-    \end{figure}
-    \section{Implementierung Komponenten}
+            \centering
+                \def\svgwidth{\linewidth} 
+                \input{media/Softwarearchtitektur.pdf_tex}
+            \caption{Softwarearchtitektur}
+            \label{fig:Softwarearchtitektur}
+        \end{figure}
+        Die Übertragung der Fahrzeugdaten von der Control-Comp, die als Producer agiert, zur Comm-Comp, die die Rolle des Consumers übernimmt, erfolgt über einen globalen Container. Da beide Threads auf den Container zugreifen können, ist ein geeigneter Mechanismus zur Synchronisierung zu implementieren.\\
+        \\
+        Um alle Threads sicher zu beenden, muss die Main-Komponente den anderen Threads miteilen, dass diese sich beenden sollen. Geschiet dies nicht, bleiben die Threads im Hintergrund offen, blockieren erneutes Ausführen und Destruktoren werden nicht aufgerufen. Das führt zu undefinierten Hardwarezuständen (z.B. Motor gibt Vollgas) und zu Speicherlecks. Daher muss ein geeigneter Mechanismus implementiert werden, der sicherstellt, dass alle Threads ordnungsgemäß beendet werden.\\
+        \\
+        Da es sich beim Mikrocontroller um ein diskretes System handelt, müssen strenge Timing-Anforderungen eingehalten werden. Diese spielen bei der Architektur der Anwendung eine maßgebliche Rolle. Regelkreise stellen strenge Echtzeitanforderungen an den Mikrocontroller, da die Datenerfassung, Berechnung und Ansteuerung der Aktoren in definierten Zeitintervallen erfolgen müssen. Kommt es zu Verzögerungen oder variablen Latenzen (Jitter), verändert sich das effektive Abtastintervall, was die Stabilität des Reglers gefährdet, Schwingungen verstärken oder zum Kontrollverlust des Würfels führen kann. Linux ist aber nicht echtzeitfähig, weil das Scheduling und die Verarbeitung von Interrupts keinem deterministischen Timing folgt. Daher bringt jeder Kontextwechsel zusätzliche, nicht deterministische Latenz mit sich. Darum sollten Kontextwechsel so gut es geht vermieden werden. Aus diesem Grund werden alle Aufgaben, die Teil des Regelkreises sind, in einem Thread (in der Control-Comp) hintereinander ausgeführt. Somit gibt es einen Kontextwechsel nur, wenn die Control-Comp bis zum nächsten Abtastintervall in den Sleep-Zustand übergeht. Währendessen kann die Comm-Comp die Fahrzeugdaten per TCP versenden. Diese Aufteilung wird gewählt, um die Echtzeitanforderungen des Systems möglichst genau einhalten zu können.\\
+        \\
+        In der gesamten Software gibt es zahlreiche Parameter, von den Reglerparametern über die Parametrierung der Hardware bis hin zu Filterkoeffizienten, die angepasst werden können. Um eine einheitliche, übersichtliche Schnittstelle zu schaffen, wird in der Datei \textit{CubeConstants.hpp} ein Namespace \textit{Cube} angelegt. Alle Parameter, die nicht fest vorgegeben sind (z.B. Speicheradressen bestimmter Register), werden in diesem Namespace gespeichert und können an den entsprechenden Stellen eingebunden werden.
+    
+    \section{Comm Comp}
+        Die Comm-Comp hat die Aufgabe, die Daten des Würfels per TCP/IP an die Python-Gui auf dem Entwicklungsrechner zu schicken. Der Code für die Client-Server-Verbindung zwischen Python-Gui und Comm-Comp ist im Framework schon implementiert. Nach der Initialisierung des Servers soll die Comm-Comp auf eine eingehende Verbindung der Python-Gui warten. Wird diese hergestellt, soll die Comm-Comp, immer wenn neue Daten im globalen Container vorhanden sind, diese Daten lesen und verschicken. Dafür muss die Comm-Comp als Consumer einen geeigneten Mechanismus zur Synchronisierung mit der Controll-Comp (dem Producer) haben.\\
+        Die relevanten Funktionen für den Aufbau der Verbindung und das Verschicken der Daten sind in der Klasse \textit{CServer} zu finden:\\
+        \\
+        \textit{void init()}: Diese Funktion initialisiert den Server.\\
+        \\
+        \textit{bool waitForClient()}: Diese Funktion blockiert den Thread, in dem sie aufgerufen wurde, solange, bis eine eingehende Verbindung erkannt wird. Die Funktion gibt eine Statusmeldung über den Erfolg der aufzubauenden Verbindung zurück.\\
+        \\
+        \textit{bool transmitMessage(SContent\& content)}: Diese Funktion verschickt eine Nachricht per TCP an die im Server gespeicherte Verbindung. Der Inhalt der Nachricht wird durch die Datenklasse \textit{SContent} übergeben. Der Rückgabewert zeigt an, ob die Nachricht verschickt werden konnte.
+        
+        Es ist dabei zu beachten, wann welche Komponente gestartet wird. Wird die Controll-Comp gestartet bevor die Verbindung zwischen der Comm-Comp und der Python-Gui hergestellt wurde, gehen die Daten in diesem Zeitraum verloren. Für die Beurteilung der Regelung sind aber genau die ersten Millisekunden nach dem Start der Controll-Comp relevant.
+
+        \paragraph{Zusätzliche Hinweise Producer-Consumer}
+            Da bei der Übertragung der Daten zwischen Controll-Comp und Comm-Comp die Daten nur einmal gelesen werden dürfen, werden Semaphoren eingesetzt. Normalerweise ist in so einem Kontext ein Cross-Handshake notwendig. Dabei signalisiert die Control-Comp das Vorhandensein neuer Daten per Semaphore, und die Comm-Comp meldet, wenn die Verarbeitung fertig ist. So wird garantiert, dass Daten weder mehrfach, gleichzeitig noch teilweise verarbeitet werden. Allerdings ist der Consumer in diesem Fall garantiert schneller als der Producer. Außerdem darf die Control-Comp unter keinen Umständen blockiert werden, da dies die Stabilität des Fahrzeugs gefährdet. Aus diesen Gründen ist eine einfache Semaphore, die der Comm-Comp signalisiert, wenn neue Daten vorhanden sind, ausreichend.
+
+    \section{Controll Comp}
+        Die Controll-Comp ist für die Regelung des Würfels verantwortlich. Damit unterliegen ihr folgende Aufgaben:
+        \begin{itemize}
+            \item Timing
+            \item Sensorik auslesen
+            \item Sensordaten kalibrieren
+            \item Zustandsschätzung
+            \item Komplementärfilter
+            \item Berechnung Stellgröße
+            \item Ansteuerung der Aktorik
+            \item Daten zum Auslesen bereitstellen
+        \end{itemize}
+        Alle diese Aufgaben werden in Module ausgelagert. Teilweise sind diese schon implementiert (z.B. Ansteuerung der Hardware) oder müssen noch von Ihnen implementiert werden (z.B. die Zustandsschätzung). Der folgende Abschnitt beschreibt die Aufgaben der einzelnen Module und gibt Hinweise zu deren Implementierung. Unter zusätzliche Hinweise sind Tipps zu finden, wenn Unklarheiten oder Probleme bei der Implementierung auftreten.
+
         \subsection{Multithread}
+            Die Regelung des \textit{Monowheelers} und der Datenaustausch mit der Python Gui sind auf zwei Komponenten (Controll-Comp und Comm-Comp) aufgeteilt. Jede Komponente soll in einem eigenen Thread gestartet werden. Die Verwaltung dieses Threads wird von der Klasse \textit{CThread} übernommen. Die Klasse \textit{CThread} erwartet ein Objekt mit dem Interface \textit{IRunnable}, eine virtuelle Klasse die eine Init()- und eine Run()-Funktion bereitstellt. Wird die start()-Funktion von \textit{CThread} aufgerufen, wird ein neuer Thread gestartet, der zuerst die Init()- Funktion und dann die Run()-Funktion des \textit{IRunnable}-Interfaces ausgeführt. Die Controll-Comp und Comm-Comp sollen also Klassen sein, die von der virtuellen Klasse \textit{IRunnable} erben, sodass sie über \textit{CThread} verwaltet werden können. Dadurch können beispielsweise auch verschiedene Prioritäten der Threads oder die Scheduling-Methode festgelegt werden können.
+
+            \paragraph{Zusätzliche Hinweise Beenden des Programms}
+                Wird die Eingabe zum Stoppen des Programms getätigt, wird von der Main den anderen Komponenten mit einer globalen Variable \textit{runvar} signalisiert, sich zu beenden. Das ist eine sehr simple und zuverlässige Variante, um einfach Daten zwischen zwei Threads auszutauschen. Dabei muss trotzdem beachtet werden, dass es sich um eine Shared-Ressource handelt. Das kann bei der Compiler-Optimierung und beim gleichzeitigen Zugriff zu Problemen führen. Idealerweise sollte daher eine atomic-Flag verwendet werden. Die Control-Komponente beendet sich nach dem nächsten Abtastschritt, wenn die Flag gesetzt wurde. Um sicherzustellen, dass die Kommunikations-Komponente nicht auf der Semaphore blockiert ist, gibt die Main die Semaphore erneut frei. Haben sich sowohl die Control-Comp als auch die Comm-Comp beendet, wird das Programm beendet.
+
         \subsection{Timing}
+            Auf klassischen Mikrocontrollern ohne Betriebssystem können Hardware-Timer zur Zeitmessung verwendet werden. Dadurch ist harte Echtzeit möglich. Auf einem Linux-System wie dem BBB werden die Hardware-Interrupts allerdings vom Linux-Kernel verwaltet. Daher können Posix-Funktionen im Userspace verwendet werden, um auf die Hardware-Timer zuzugreifen. Damit kann ein Timer aufgerufen werden, der die aktuelle Zeit auf Mikrosekunden genau ausgibt (z.B. mit \textit{clock\_gettime()}). Damit kann der Zeitstempel zu Beginn der Schleife gespeichert werden. Nach dem Schleifendurchlauf kann der aktuelle Zeitstempel erneut gemessen werden. Durch die Differenz zwischen Start- und Endzeit lässt sich bestimmen, wie viel Zeit bis zum nächsten Abtastintervall gewartet werden muss. Diese Zeit kann der Thread dann mit einer Funktion wie \textit{clock\_nanosleep()} schlafen, um der Comm-Comp Zeit zum Ausführen zu geben.
+
         \subsection{Ansteuerung Hardware (Sensorik, Aktorik)}
-        \subsection{Producer-Consumer: Datenübertragung}
-        \subsection{Verarbeitung Sensordaten und Zustandsschätzung}
+            Die Implementierung der Ansteuerung der Hardware ist bereits im Framework in \textit{lib/Hardware} implementiert. Der Zugriff auf die Hardware erfolgt durch die Klasse \textit{CBBBHardware}. Dort werden die folgenden Funktionen implementiert:\\
+            \\
+            \textit{bool fetchValues(UInt16\& adcValue, CIMUData\& sensor1Data, CIMUData\& sensor2Data)}: Diese Funktion liest die Rohwerte der Sensoren aus. Dazu zählen die beiden IMUs zur Lagebestimmung sowie der ADC zur Bestimmung der Geschwindigkeit der Schwungscheibe. Die Rohdaten werden in die übergebenen Datenobjekte der Typen \textit{UInt16} und \textit{CIMUData} geschrieben. Die Funktion liefert eine Statusmeldung über den Erfolg des Aufrufs als Rückgabewert.\\
+            \\
+            \textit{bool enableMotor()/bool disableMotor()}: Schaltet den Motor Ein/Aus. Muss bei Beginn und Ende des Programms einmalig ausgeführt werden. Die Funktion liefert eine Statusmeldung über den Erfolg des Aufrufs als Rückgabewert.\\
+            \\
+            \textit{bool setTorque(float torque)}: Ist der Motor aktiviert, setzt diese Funktion das übergebene Drehmoment am Motor. Die Funktion liefert eine Statusmeldung über den Erfolg des Aufrufs als Rückgabewert.
+            
+        \subsection{Bereitstellen der Daten}
+            Die Daten, die an den Entwicklungsrechner geschickt werden sollen, werden mit dem globalen Container an die Comm-Comp (Consumer) übergeben. Die Controll-Comp (Producer) muss also bei jedem Durchlauf die Daten im Container aktualisieren. Um die Datenübertragung thread-sicher zu gestalten und Race-Conditions zu vermeiden, enthält der Container neben den Daten einen Mechanismus zur Synchronisierung. Die Controll-Comp muss dafür den Producer-Teil des Mechanismus zur Synchronisierung implementieren.
+
+            \paragraph{Zusätzliche Hinweise Producer-Consumer}
+                Da bei der Übertragung der Daten zwischen Controll-Comp und Comm-Comp die Daten nur einmal gelesen werden dürfen, werden Semaphoren eingesetzt. Normalerweise ist in so einem Kontext ein Cross-Handshake notwendig. Dabei signalisiert die Control-Comp das Vorhandensein neuer Daten per Semaphore, und die Comm-Comp meldet, wenn die Verarbeitung fertig ist. So wird garantiert, dass Daten weder mehrfach, gleichzeitig noch teilweise verarbeitet werden. Allerdings ist der Consumer in diesem Fall garantiert schneller als der Producer. Außerdem darf die Control-Comp unter keinen Umständen blockiert werden, da dies die Stabilität des Fahrzeugs gefährdet. Aus diesen Gründen ist eine einfache Semaphore, die der Comm-Comp signalisiert, wenn neue Daten vorhanden sind, ausreichend.
+
+        \subsection{Kalibrierung Sensordaten}
+            Die rohen Sensordaten aller Sensoren müssen mit dem Kalibrierpolynom wie in \autoref{ch:Sensorcalib} beschrieben kalibriert werden. Die konstanten Faktoren der Polynome sollen dabei in der Datei \textit{CubeConstants.hpp} gespeichert werden. Bei der Berechnung der physikalischen Sensorwerte müssen sowohl Einheiten als auch die Datentypen der Rohwerte und physikalischen Werte beachtet werden.
+
+        \subsection{Zustandsschätzung}
+            Nicht alle relevanten Daten des Würfels ergeben sich direkt aus den Sensordaten. Daher müssen die gewünschten Zustände aus den Sensordaten berechnet werden. Da die Zustände teilweise nicht direkt gemessen werden, wird dieser Prozess Zustandsschätzung genannt. Die relevanten Größen sind die Einträge des Zustandsvektors: der Winkel des Würfels, die Winkelgeschwindigkeit und die Geschwindigkeit der Schwungscheibe. Grundlage hierfür sind Messdaten der beiden IMUs, die sich in bekannten Abständen zum Drehpunkt befinden, sowie der ADC-Wandler zur Bestimmung der Drehzahl der Schwungscheibe. Der Abstand der ersten IMU beträgt $r_1 = 0{,}14\,\mathrm{m}$, der Abstand der zweiten IMU $r_2 = 0{,}061\,\mathrm{m}$.\\
+            \\
+            Auf Basis der kalibrierten Sensordaten sollen geeignete Schätzwerte für die Zustandsgrößen berechnet und zusammengefasst ausgegeben werden. Dabei sind folgende physikalische Zusammenhänge zu berücksichtigen:
+
+            \begin{enumerate}
+                \item Die Winkelgeschwindigkeit der Schwungmasse $\dot{\psi}$ ergibt sich direkt aus der entsprechenden kalibrierten Messung.
+
+                \item Die Winkelgeschwindigkeit des Würfels $\dot{\varphi}$ wird aus den Messwerten der beiden Gyroskope bestimmt, indem deren Beiträge geeignet kombiniert werden (z.\,B. durch Mittelung).
+
+                \item Der geschätzte Winkel des Würfels $\varphi_A$ wird aus den gemessenen linearen Beschleunigungen der beiden IMUs berechnet. Dabei gilt
+                \[
+                    \varphi_A = \arctan\!\left(
+                    \frac{\ddot{x}_1 - \dfrac{r_1}{r_2}\cdot \ddot{x}_2}
+                        {\ddot{y}_1 - \dfrac{r_1}{r_2}\cdot \ddot{y}_2}
+                    \right),
+                \]
+                wobei $\ddot{x}_i$ und $\ddot{y}_i$ die gemessenen Beschleunigungskomponenten der jeweiligen IMU und $r_1$, $r_2$ deren Abstände zum Drehpunkt darstellen.
+            \end{enumerate}
+
+        \subsection{Komplementärfilter}
+            Zur Verbesserung der Schätzung des Würfelwinkels wird ein Komplementärfilter implementiert. Das Filter arbeitet wie der Rest des Regelkreises mit einer festen Abtastperiode von $T = 0{,}02\,\mathrm{s}$. Eine geeignete Grenzfrequenz ergibt sich bei einem Gewichtungsfaktor $\alpha = 0{,}98$.\\
+            \\
+            Als Eingang dienen die zuvor geschätzten Zustandsgrößen, der Ausgang ist der gefilterte Winkel des Würfels. Für den ersten Abtastschritt wird der aktuell geschätzte Winkel direkt als Filterausgang verwendet. Für alle weiteren Abtastschritte wird der gefilterte Winkel rekursiv nach folgender Vorschrift berechnet:
+            \[
+                \varphi_n^{C}
+                =
+                \alpha \left( \varphi_{n-1}^{C} + T \, \dot{\varphi} \right)
+                +
+                (1 - \alpha)\,\varphi_n^{A},
+            \]
+            wobei $n$ den Abtastindex bezeichnet, $\varphi^{C}$ den Wert für den Winkel des Komplementärfilters, $\varphi^{A}$ den aus der Zustandsschätzung gewonnenen Winkel und $\dot{\varphi}$ die Winkelgeschwindigkeit des Würfels. Die Winkelgeschwindigkeit der Schwungmasse $\dot{\psi}$ sowie die Winkelgeschwindigkeit des Würfels $\dot{\varphi}$ werden nicht gefiltert, sondern können für die Regelung direkt aus der Zustandsschätzung übernommen werden.
+
         \subsection{Regelung}
+            Der Eingang der Regelung ist der Zustandsvektor. Zur Bestimmung der Stellgröße (Motormoment) wird der Zustandsvektor mit der Reglermatrix $K$ zeilenweise multipliziert.

@@ -1,0 +1,20 @@
+\chapter{Reglerauslegung und Simulation}
+    \label{ch:Simulink}
+    Der Regler zur Stabilisierung des Würfels soll auf Basis des LQR-Ansatzes mit Matlab/Simulink ausgelegt werden. Anschließend soll der Regler in der Simulation validiert werden. Ausgangspunkt bildet die linearisierte Zustandsraumdarstellung des Systems, beschrieben durch die Matrizen $A$ und $B$, die aus der Modellierung bekannt sind. Auf dieser Grundlage wird ein zeitdiskreter Zustandsregler mit einer Abtastperiode von $T = 20\,\mathrm{ms}$ entworfen. Für die initiale Auslegung des Reglers werden zunächst Einheitsgewichtungen verwendet:
+    \[
+        Q = I, \qquad R = 1.
+    \]
+    Zur Bewertung der Reglerauslegung wird der geschlossene Regelkreis an einem nichtlinearen Modell des Würfels untersucht. Hierfür wird der Zustandsregler in ein geeignetes Subsystem integriert, das mit der gewählten Abtastperiode arbeitet. Die Simulation erfolgt ausgehend von einer Anfangsauslenkung des Würfels von $10^\circ$, um das Einschwingverhalten und die Stabilisierung des Systems zu analysieren.\\
+    \\
+    Im letzten Schritt wird der Zustandsregler gezielt abgestimmt, um ein gewünschtes dynamisches Verhalten zu erreichen. Ziel ist es, dass alle drei Zustandsgrößen innerhalb von etwa $3\,\mathrm{s}$ gegen Null konvergieren, während das aufgebrachte Drehmoment einen Betrag von ungefähr $0{,}5\,\mathrm{Nm}$ nicht überschreitet. Dazu werden die Gewichtungsmatrizen des LQR-Entwurfs angepasst. Es werden Diagonalmatrizen der Form
+    \[
+        Q =
+        \begin{pmatrix}
+            q_1 & 0   & 0 \\
+            0   & q_2 & 0 \\
+            0   & 0   & q_3
+        \end{pmatrix},
+        \qquad
+        R = r
+    \]
+    verwendet, wobei die Parameter $q_1$, $q_2$, $q_3$ und $r$ systematisch variiert werden, bis die gewünschte Regelgüte und Aktuatorbegrenzung erreicht sind.

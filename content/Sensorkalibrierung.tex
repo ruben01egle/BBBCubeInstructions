@@ -1,0 +1,50 @@
+\chapter{Sensoren und Sensorkalibrierung}
+    \label{ch:Sensorcalib}
+    Die Sensoren des Würfels liefern Informationen über die physikalischen Zustände des Würfels. Um aus den digitalen  Sensorrohwerten die physikalischen Zustände herauszufinden, sind verschiedene Schritte notwendig.
+
+    \section{Kalibrierung}
+        Sensoren müssen kalibriert werden, weil ihre rohen Messwerte nicht direkt den realen physikalischen Größen entsprechen. Kalibrierung stellt sicher, dass Messungen korrekt, vergleichbar und nutzbar sind. Die wichtigsten Gründe sind:
+        \begin{itemize}
+            \item Kein Sensor ist exakt gleich. Durch Fertigungsstreuungen unterscheiden sich die Rohdaten bei gleicher Messung zwischen Sensoren.
+            \item Sensoren liefern meist digitale Rohwerte (z.,B. ADC-Zählwerte). Erst durch Kalibrierung lassen sich diese sinnvoll in SI-Einheiten umrechnen.
+            \item Korrektur von Offsets (Nullpunktfehlern). Viele Sensoren zeigen auch dann einen Wert an, wenn die gemessene Größe eigentlich null ist (z.,B. Gyroskope im Stillstand). Die Kalibrierung entfernt diesen systematischen Fehler.
+        \end{itemize}
+        Ziel dieser Aufgabe ist die Kalibrierung aller im System verwendeten Sensoren, sodass deren digitale Messwerte in physikalische Größen in SI-Einheiten überführt werden können. Für jeden Sensor wird ein lineares Kalibrierpolynom aufgestellt:
+        \[
+            data = scale\cdot (data_{raw} - offset)
+        \]
+        Damit müssen für jeden Sensor zwei Faktoren bestimmt werden. Pro Sensor sind daher mindestens zwei Messpunkte erforderlich. Die Skalierungsfaktoren können teilweise aus Datenblättern entnommen werden, sodass in diesen Fällen nur noch eine Messung zur Bestimmung des Offsets notwendig ist.\\
+        \\
+        Zur Bestimmung der Kalibrierfaktoren eines Sensors werden Messungen unter definierten Bedingungen durchgeführt, bei denen der zu messende physikalische Wert bekannt ist. Für jede dieser Referenzsituationen wird der digitale Rohwert des Sensors aufgezeichnet. Durch den Vergleich des bekannten physikalischen Werts mit dem zugehörigen digitalen Messwert entsteht ein Datenpaar, das den Zusammenhang zwischen Sensorrohwert und physikalischer Größe beschreibt.\\
+        \\
+        Werden zwei solche Datenpaare aufgenommen, so ergeben sich zwei lineare Gleichungen mit den beiden unbekannten Parametern $scale$ und $offset$. Der physikalische Wert $data$ ist für beide Messpunkte bekannt, da die physikalische Größe, die gemessen wird, bekannt ist. $data_{raw}$ wird vom Sensor geliefert. Damit entsteht ein lineares Gleichungssystem, das eindeutig gelöst werden kann, um die Kalibrierparameter des Sensors zu bestimmen. Für eine bessere Genauigkeit kann es sinnvoll sein, mehr Datenpunkte aufzunehmen. Das überbestimmte Gleichungssystem kann dann mit Funktionen wie \textit{polyfit} approximiert werden.\\
+        \\
+        Beim Würfel gibt es die Möglichkeit, die Sensorrohwerte vom BeagleBone an die Python-Gui zu schicken. Dort werden die Daten automatisch in eine CSV-Datei geloggt, sodass sie zur Auswertung zur Verfügung stehen. Der Würfel wird also in einen bekannten Zustand gebracht und eine Messung von ca. \SI{10}{\second} aufgezeichnet. Die Sensorrohdaten können dann mit Python oder Matlab eingelesen werden und die Kalibrierparameter bestimmt werden.
+
+        \subsection{Kalibrierung des AD-Wandlers der Schwungmasse}
+            Zur Bestimmung des Kalibrierpolynoms des AD-Wandlers wird eine bekannte Motorkonfiguration genutzt. Der Motortreiber ist so eingestellt, dass bei einer Rotationsgeschwindigkeit von $157\,\mathrm{rad/s}$ ein digitaler Messwert von 4096 ausgegeben wird und bei $-157\,\mathrm{rad/s}$ ein digitaler Messwert von 0.   Anhand dieser beiden Referenzpunkte kann das lineare Kalibrierpolynom bestimmt werden, indem die beiden unbekannten Parameter $a$ (Skalierung) und $b$ (Offset) so gewählt werden, dass die bekannten Geschwindigkeiten den gemessenen Rohwerten entsprechen. Zusätzlich sollte noch eine Messung durchgeführt werden, um das Offset des Sensors zu bestimmen. Dazu wird berechnet, welcher Rohwert im Stillstand erwartet wird, und dies mit den tatsächlichen Sensorwerten vergleichen.
+
+        \subsection{Kalibrierung der Accelerometer}
+            Die Kalibrierung der Accelerometer erfolgt experimentell. Hierzu wird der Würfel in mehreren bekannten Ruhelagen positioniert und die digitalen Messwerte der Sensoren in den jeweiligen Messrichtungen aufgezeichnet und gemittelt. Mithilfe der bekannten Zusammenhänge zwischen Würfelwinkel und Gravitationsbeschleunigung
+            \[
+                \ddot{x}_i = \sin(\varphi)\, g,
+                \qquad
+                \ddot{y}_i = -\cos(\varphi)\, g
+            \]
+            können den Messwerten die entsprechenden physikalischen Beschleunigungen zugeordnet werden. Aus den resultierenden Wertepaaren wird für jede Achse ein Kalibrierpolynom bestimmt.
+
+        \subsection{Kalibrierung der Gyroskope}
+            Für die Kalibrierung der Gyroskope zur Bestimmung der Winkelgeschwindigkeit des Würfels $\dot{\varphi}$ wird die im Datenblatt angegebene Verstärkung $scale = \SI{0.001060}{\radian\per\second}$ verwendet. Das Offset wird experimentell bestimmt, indem die Sensorausgänge bei ruhendem Würfel aufgezeichnet und gemittelt werden.
+    
+    \section{Zustandsschätzung und Komplementärfilter}
+        Beide Sensortypen in den Imus (Accelerometer und Gyroskope) weisen spezifische Stärken und Schwächen auf. Die Accelerometer messen nicht nur die Erdbeschleunigung, sondern auch die Beschleunigungen durch rotatorische und translatorische Bewegungen, wodurch es zu Fehlern in der Winkelschätzung kommt. Diese Einflüsse können durch die Verwendung von zwei Imus und dem geometrischen Trick teilweise eliminiert werden. Die Accelerometer liefern aber langfristig stabile Werte, da keine Integration erforderlich ist. Die Gyroskope hingegen reagieren sehr gut auf schnelle Bewegungen und erfassen die Dynamik des Fahrzeugs präzise. Dafür sind sie anfällig für Drift, da sich die Integrationsfehler nach und nach aufsummieren.\\
+        \\
+        Um die Zustandsschätzung zu verbessern, wird ein Komplementärfilter eingesetzt. Dabei werden die Sensordaten beider Sensortypen so kombiniert, dass die Stärken der Sensoren genutzt und die Schwächen durch den jeweils anderen Sensor ausgeglichen werden. Dabei wird die Winkelschätzung durch die Gyroskope mit einem Hochpassfilter belegt, sodass der Drift (sehr niedrige Frequenz) gefiltert wird. Die hohen Frequenzen bilden die schnellen Bewegungen des Würfels ab. Die Daten des Accelerometer werden mit einem Tiefpassfilter mit derselben Grenzfrequenz wie der Hochpassfilter der Gyroskope belegt, sodass hier die hochfrequenten Rauschanteile gefiltert werden, aber die langfristige Korrektur der Orientierung genutzt wird. Die Berechnungsvorschrift des Filters sieht wie folgt aus:
+        \[
+            \varphi_n^{C}
+            =
+            \alpha \left( \varphi_{n-1}^{C} + T \, \dot{\varphi} \right)
+            +
+            (1 - \alpha)\,\varphi_n^{A},
+        \]
+        wobei $n$ den Abtastindex bezeichnet, $\varphi^{C}$ den Wert für den Winkel des Komplementärfilters, $\varphi^{A}$ den aus der Zustandsschätzung gewonnenen Winkel und $\dot{\varphi}$ die Winkelgeschwindigkeit des Würfels. Die Winkelgeschwindigkeit der Schwungmasse $\dot{\psi}$ sowie die Winkelgeschwindigkeit des Würfels $\dot{\varphi}$ werden nicht gefiltert, sondern können für die Regelung direkt aus der Zustandsschätzung übernommen werden. Der Faktor $\alpha$ bestimmt die Grenzfrequenz des Hoch- und Tiefpassfilters. Eine geeignete Grenzfrequenz von ca. \SI{0.16}{\hertz} ergibt sich bei einem Gewichtungsfaktor $\alpha = 0{,}98$.

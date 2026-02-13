@@ -1,6 +1,6 @@
 \chapter{Reglerauslegung und Simulation}
     \label{ch:Simulink}
-    Der Regler zur Stabilisierung des Würfels soll auf Basis des LQR-Ansatzes mit Matlab/Simulink ausgelegt werden. Anschließend soll der Regler in der Simulation validiert werden. Ausgangspunkt bildet die linearisierte Zustandsraumdarstellung des Systems, beschrieben durch die Matrizen $A$ und $B$, die aus der Modellierung bekannt sind. Auf dieser Grundlage wird ein zeitdiskreter Zustandsregler mit einer Abtastperiode von $T = 20\,\mathrm{ms}$ entworfen. Für die initiale Auslegung des Reglers werden zunächst Einheitsgewichtungen verwendet:
+    Der Regler zur Stabilisierung des Würfels soll auf Basis des LQR-Ansatzes mit Matlab/Simulink ausgelegt werden. Anschließend soll der Regler in der Simulation validiert werden. Ausgangspunkt bildet die linearisierte Zustandsraumdarstellung des Systems, beschrieben durch die Matrizen $A$ und $B$, die aus der Modellierung bekannt sind. Verwenden Sie das Modell ohne Reibung. Auf dieser Grundlage wird ein zeitdiskreter Zustandsregler mit einer Abtastperiode von $T = 20\,\mathrm{ms}$ entworfen. Für die initiale Auslegung des Reglers werden zunächst Einheitsgewichtungen verwendet:
     \[
         Q = I, \qquad R = 1.
     \]

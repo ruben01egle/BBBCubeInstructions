@@ -1,12 +1,28 @@
 \chapter{Aufgabenstellung}
-    Das Zeil des Labors ist es, den Würfel in der instabilen Ruhelage zu stabilisieren. Dazu soll das in der Vorlesung erarbeitete Modell genutzt werden, um einen Zustandsregler zu entwerfen, zu simulieren und auf dem Mikrocontroller umzusetzen. Dazu muss zuerst die Entwicklungsumgebung, wie in \autoref{ch:SetupEntwicklungsumgebung} beschrieben, eingerichtet werden. Anschließend kann die schrittweise Implementierung der Target-Anwendung auf dem BeagleBone durchgeführt werden. Auch gibt es bereits Klassen zum Speichern aller möglichen Daten (Imu-Daten, Zustandsvektor etc.). Verwenden Sie diese und machen Sie sich mit dem Framework vertraut, indem Sie sich anschauen, welche Klassen existieren! Das empfohlene Vorgehen zur Realisierung der Regelung des Würfels ist das Folgende:
+    Das Zeil des Labors ist es, den Würfel in der instabilen Ruhelage zu stabilisieren. Dafür soll das in der Vorlesung erarbeitete Modell genutzt werden, um einen Zustandsregler zu entwerfen, zu simulieren und auf dem Mikrocontroller umzusetzen. Dazu muss zuerst die Entwicklungsumgebung, wie in \autoref{ch:SetupEntwicklungsumgebung} beschrieben, eingerichtet werden. Anschließend kann die schrittweise Implementierung der Target-Anwendung auf dem BeagleBone durchgeführt werden. Auch gibt es bereits Klassen zum Speichern aller möglichen Daten (Imu-Daten, Zustandsvektor etc.). Verwenden Sie diese und machen Sie sich mit dem Framework vertraut, indem Sie sich anschauen, welche Klassen existieren! Das empfohlene Vorgehen zur Realisierung der Regelung des Würfels wird im folgenden Abschnitt beschrieben. Details und Hilfestellungen zur Implementierung der einzelnen Aufgaben finden sich in \autoref{ch:Software}. Machen Sie sich Gedanken über wiederverwendbaren, strukturierten und leserlichen Code.
     
     \section{Implementierung der Multithread-Umgebung}
+        Implementieren Sie ein Multithread-Program in dem zwei Threads erzeugt werden, die gleichzeitig ausgeführt werden. Dazu soll das \textit{IRunnable}-Interface des Frameworks verwendet. Die Threads bieten die Grundlage für den späteren Producer-Consumer-Austausch zwischen dem Thread zur Regelung (ControlComp) und dem Thread zum Versenden der Daten des Würfels (CommComp). Achten Sie darauf, einen geeigneten Mechanismus zum Beenden der beiden gestarteten Threads zu implementieren, um das Program per Tastatureingabe stoppen zu können.
+
     \section{Implementierung des Timings}
+        Um das feste Abtastintervall garantieren zu können, muss ein geeigneter Mechanismus zum Timing des zeitgebenden Threads (ControlComp) implementiert werden. Starten Sie hierfür nur einen Thread, die CommComp ist für diese Aufgabe nicht benötigt. Sobald Sie die Implementierung der Datenübertragung (siehe \autoref{sec:Datatransfer}) abgeschlossen haben, sollen Sie den mitgeschickten Zeitstempel (zu finden in der cvs Datei, die automatisch beim Ausführen der GUI erstellt wird) auswerten um den Jitter des Systems zu bestimmen. Beurteilen Sie, ob die Genauigkeit Ihre Timers ausreicht.
+
     \section{Ansteuerung der Hardware}
+        Implementieren Sie den Zugriff auf die Sensorik und Aktorik über die bereitgestellte Hardware-Klasse. Dies umfasst das Auslesen der IMU-Rohwerte sowie das Aktivieren und Ansteuern des Motors über ein definiertes Drehmoment. Die Zugriffe werden über das vorhande Framework verwaltet und sollen in der ControlComp geschehen. 
+
     \section{Implementierung der Datenübertragung zum Entwicklungsrechner}
+    \autoref{sec:Datatransfer}
+        Realisieren Sie eine thread-sichere Datenübergabe zwischen der Control-Comp (Producer) und der Comm-Comp (Consumer). Nutzen Sie zur Synchronisation einen Semaphoren-Mechanismus, um die Daten verlustfrei an die Python-GUI zu übertragen. Schauen Sie sich an, welche Daten von der Übertragung erwartet werden. Übertragen Sie anstelle der Zustandsdaten zunächst dummy-Daten, um die Funktion zu überprüfen. Testen Sie Ihren Timer über den mitzuschickenden Zeitstempel. Machen Sie sich Gedanken über das sichere und sinnvolle Starten und Beenden der Producer-Consumer-Kommunikation. 
+
     \section{Kalibrierung der Sensordaten}
+        Ermitteln Sie die Kalibrierparameter (Scale und Offset) für alle Sensoren durch Referenzmessungen. Überführen Sie die digitalen Rohwerte der Accelerometer, Gyroskope und des AD-Wandlers mithilfe linearer Polynome in physikalische SI-Einheiten. Nutzen Sie die Datenübertragung zur Python-Gui um die Referenzmessungen auf Ihrem PC verarbeiten zu können.
+
     \section{Implementierung der Zustandsschätzung und Filterung}
+        Berechnen Sie den aktuellen Systemzustand aus den kalibrierten Sensordaten. Implementieren Sie zur Fusion der IMU-Daten einen Komplementärfilter, um einen driftfreien und rauscharmen Schätzwert für den Würfelwinkel zu erhalten. Validieren Sie Ihre Ergebnisse durch das Bewegen des Würfels und die Live-Datenanzeige in der Python-Gui.
+
     \section{Reglerauslegung und Simulation mit Simulink}
+        Entwerfen Sie einen zeitdiskreten Zustandsregler nach dem LQR-Verfahren. Validieren Sie das Regelkonzept in der Simulation am nichtlinearen Modell und optimieren Sie die Gewichtungsmatrizen Q und R auf Basis der geforderten Performance-Vorgaben.
+
     \section{Implementierung der Regelschleife}
+        Überführen Sie die ermittelte Reglermatrix K in die Target-Anwendung. Implementieren Sie die zyklische Berechnung der Stellgröße, um den Würfel im instabilen Gleichgewichtspunkt zu balancieren. Wenn Sie alles richtig gemacht haben, steht Ihr Würfel nun - Glückwunsch! Bedenken Sie den Würfel in die richtige Ausgangslage zu bringen, bevor Sie ihr Experiment starten.
     

@@ -11,7 +11,7 @@
     \end{figure}
     
     \section{Architektur Target-Anwendung}
-        Die Architektur und der Ablauf der Targetanwendung ist in \autoref{fig:Softwarearchtitektur} dargestellt. Diese besteht aus drei Komponenten, die jeweils in einem eigenen Thread laufen. Die Main-Komponente verwaltet die anderen beiden Komponenten und verarbeitet Nutzereingaben. Zusätzlich werden die beiden anderen Komponenten erstellt und gestartet. Die Control-Comp kümmert sich um die Umsetzung der Regelkreise und die Ansteuerung der Hardware, während die Comm-Comp Fahrzeugdaten an die Python-Gui auf dem Entwicklungsrechner verschickt.
+        Die Architektur und der Ablauf der Targetanwendung ist in \autoref{fig:Softwarearchtitektur} dargestellt. Diese besteht aus drei Komponenten, die jeweils in einem eigenen Thread laufen. Die Main-Komponente verwaltet die anderen beiden Komponenten und verarbeitet Nutzereingaben. Zusätzlich werden die beiden anderen Komponenten erstellt und gestartet. Die Control-Comp kümmert sich um die Umsetzung der Regelkreise und die Ansteuerung der Hardware, während die Comm-Comp Daten des Würfels an die Python-Gui auf dem Entwicklungsrechner verschickt.
         \begin{figure}[H]
             \centering
                 \def\svgwidth{\linewidth} 
@@ -19,7 +19,7 @@
             \caption{Softwarearchtitektur}
             \label{fig:Softwarearchtitektur}
         \end{figure}
-        Die Übertragung der Fahrzeugdaten von der Control-Comp, die als Producer agiert, zur Comm-Comp, die die Rolle des Consumers übernimmt, erfolgt über einen globalen Container. Da beide Threads auf den Container zugreifen können, ist ein geeigneter Mechanismus zur Synchronisierung zu implementieren.\\
+        Die Übertragung der Daten von der Control-Comp, die als Producer agiert, zur Comm-Comp, die die Rolle des Consumers übernimmt, erfolgt über einen globalen Container. Da beide Threads auf den Container zugreifen können, ist ein geeigneter Mechanismus zur Synchronisierung zu implementieren.\\
         \\
         Um alle Threads sicher zu beenden, muss die Main-Komponente den anderen Threads miteilen, dass diese sich beenden sollen. Geschiet dies nicht, bleiben die Threads im Hintergrund offen, blockieren erneutes Ausführen und Destruktoren werden nicht aufgerufen. Das führt zu undefinierten Hardwarezuständen (z.B. Motor gibt Vollgas) und zu Speicherlecks. Daher muss ein geeigneter Mechanismus implementiert werden, der sicherstellt, dass alle Threads ordnungsgemäß beendet werden.\\
         \\

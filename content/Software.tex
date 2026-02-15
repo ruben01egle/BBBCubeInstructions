@@ -104,17 +104,9 @@
             \end{enumerate}
 
         \subsection{Komplementärfilter}
-            Zur Verbesserung der Schätzung des Würfelwinkels wird ein Komplementärfilter implementiert. Das Filter arbeitet wie der Rest des Regelkreises mit einer festen Abtastperiode von $T = 0{,}02\,\mathrm{s}$. Eine geeignete Grenzfrequenz ergibt sich bei einem Gewichtungsfaktor $\alpha = 0{,}98$.\\
+            Zur Verbesserung der Schätzung des Würfelwinkels wird ein Komplementärfilter implementiert. Das Filter arbeitet wie der Rest des Regelkreises mit einer festen Abtastperiode von $T = 0{,}02\,\mathrm{s}$ und ist in \autoref{sec:complementary} beschrieben.\\
             \\
-            Als Eingang dienen die zuvor geschätzten Zustandsgrößen, der Ausgang ist der gefilterte Winkel des Würfels. Für den ersten Abtastschritt wird der aktuell geschätzte Winkel direkt als Filterausgang verwendet. Für alle weiteren Abtastschritte wird der gefilterte Winkel rekursiv nach folgender Vorschrift berechnet:
-            \[
-                \varphi_n^{C}
-                =
-                \alpha \left( \varphi_{n-1}^{C} + T \, \dot{\varphi} \right)
-                +
-                (1 - \alpha)\,\varphi_n^{A},
-            \]
-            wobei $n$ den Abtastindex bezeichnet, $\varphi^{C}$ den Wert für den Winkel des Komplementärfilters, $\varphi^{A}$ den aus der Zustandsschätzung gewonnenen Winkel und $\dot{\varphi}$ die Winkelgeschwindigkeit des Würfels. Die Winkelgeschwindigkeit der Schwungmasse $\dot{\psi}$ sowie die Winkelgeschwindigkeit des Würfels $\dot{\varphi}$ werden nicht gefiltert, sondern können für die Regelung direkt aus der Zustandsschätzung übernommen werden.
-
+            Als Eingang dienen die zuvor geschätzten Zustandsgrößen, der Ausgang ist der gefilterte Winkel des Würfels. Für den ersten Abtastschritt wird der aktuell geschätzte Winkel direkt als Filterausgang verwendet. Für alle weiteren Abtastschritte wird der gefilterte Winkel rekursiv berechnet.
+            
         \subsection{Regelung}
             Der Eingang der Regelung ist der Zustandsvektor. Zur Bestimmung der Stellgröße (Motormoment) wird der Zustandsvektor mit der Reglermatrix $K$ zeilenweise multipliziert.

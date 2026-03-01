@@ -31,7 +31,7 @@
                 \qquad
                 \ddot{y}_i = -\cos(\varphi)\, g
             \]
-            können den Messwerten die entsprechenden physikalischen Beschleunigungen zugeordnet werden. Aus den resultierenden Wertepaaren wird für jede Achse ein Kalibrierpolynom bestimmt.
+            können den Messwerten die entsprechenden physikalischen Beschleunigungen zugeordnet werden. Aus den resultierenden Wertepaaren wird für jede Achse ein Kalibrierpolynom bestimmt. Zudem ist die Ausrichtung der IMUs (Inertial Measurement Units) zu beachten. Hierfür müssen die Orientierungen der Sensoren durch das Auslesen der Rohwerte in definierten Referenzpositionen bestimmt werden. Dies ist notwendig, um die Sensordaten softwareseitig an das Koordinatensystem des Würfels anzupassen.
 
         \subsection{Kalibrierung der Gyroskope}
             Für die Kalibrierung der Gyroskope zur Bestimmung der Winkelgeschwindigkeit des Würfels $\dot{\varphi}$ wird die im Datenblatt angegebene Verstärkung $scale = \SI{0.001060}{\radian\per\second}$ verwendet. Das Offset wird experimentell bestimmt, indem die Sensorausgänge bei ruhendem Würfel aufgezeichnet und gemittelt werden.
@@ -48,4 +48,6 @@
             +
             (1 - \alpha)\,\varphi_n^{A},
         \]
-        wobei $n$ den Abtastindex bezeichnet, $\varphi^{C}$ den Wert für den Winkel des Komplementärfilters, $\varphi^{A}$ den aus der Zustandsschätzung gewonnenen Winkel und $\dot{\varphi}$ die Winkelgeschwindigkeit des Würfels. Die Winkelgeschwindigkeit der Schwungmasse $\dot{\psi}$ sowie die Winkelgeschwindigkeit des Würfels $\dot{\varphi}$ werden nicht gefiltert, sondern können für die Regelung direkt aus der Zustandsschätzung übernommen werden. Der Faktor $\alpha$ bestimmt die Grenzfrequenz des Hoch- und Tiefpassfilters. Eine geeignete Grenzfrequenz von ca. \SI{0.16}{\hertz} ergibt sich bei einem Gewichtungsfaktor $\alpha = 0{,}98$.
+        wobei $n$ den Abtastindex bezeichnet, $\varphi^{C}$ den Wert für den Winkel des Komplementärfilters, $\varphi^{A}$ den aus der Zustandsschätzung gewonnenen Winkel und $\dot{\varphi}$ die Winkelgeschwindigkeit des Würfels. Die Winkelgeschwindigkeit der Schwungmasse $\dot{\psi}$ sowie die Winkelgeschwindigkeit des Würfels $\dot{\varphi}$ werden nicht gefiltert, sondern können für die Regelung direkt aus der Zustandsschätzung übernommen werden. Der Faktor $\alpha$ bestimmt die Grenzfrequenz des Hoch- und Tiefpassfilters. Eine geeignete Grenzfrequenz von ca. \SI{0.16}{\hertz} ergibt sich bei einem Gewichtungsfaktor $\alpha = \num{0.98}$.\\
+        \\
+        Zu beachten ist zudem, dass der Zustandsfilter mit dem Startwert 0 initialisiert wird. Die Gyroskope können eine anfängliche Schräglage nicht erfassen, da zu Beginn keine Bewegung vorliegt. Aufgrund der starken Tiefpassfilterung der Akzelerometer benötigt der Filter eine gewisse Zeit, bis er den tatsächlichen Wert des Winkels einschwingt. Es ist daher ratsam, die Zustandsschätzung einige Sekunden vor dem Start der Regelung zu aktivieren, damit der Regler von Beginn an physikalisch korrekte Daten erhält.
